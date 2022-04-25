@@ -1,0 +1,43 @@
+---
+title: "Map_draft"
+output: html_document
+---
+
+
+## Precinct shape file outdate (up to 2018)
+
+Information about this data is here: https://github.com/mggg-states/MD-shapefiles 
+
+Michael has voter data for these files.
+
+```{r, include = FALSE}
+# load the packages we need
+library(here)
+library(sf)
+library(ggplot2)
+library(googlesheets4)
+library(ggmap)
+library(tidyverse)
+library(magrittr)
+library(sf)
+```
+
+
+```{r, include = FALSE}
+# load the up to 2018 precinct shape data
+precincts_to_2018 <- sf::st_read(here::here(
+  "data", "MD_precincts_to_2018", "MD-precincts.shp"))
+#filter to just Baltimore City
+precincts_to_2018 %<>%
+  filter(str_detect(pattern= "Baltimore City", string = NAME))
+```
+
+```{r, echo = FALSE}
+ggplot() + 
+  geom_sf(data = precincts_to_2018[1:3], size = 1, color = "black", fill = "cyan") + 
+  ggtitle("Precinct Boundary Plot") + 
+  coord_sf()
+```
+
+
+Ideally also want 2020 shape files as well for the 2020 voter data files.
