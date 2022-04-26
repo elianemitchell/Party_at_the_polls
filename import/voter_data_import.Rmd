@@ -28,11 +28,15 @@ library(tidyverse)
 
 ## May data
 
+First trying with xlsx:
+
 ```{r,  eval = FALSE}
 #Data from May imported by Carrie on her machine - not including data on GitHub for security reasons
 Maypart1<- readxl::read_xlsx(here::here("data", "voter_data", "may_2020", "May_part1.xlsx"))
-#This caused errors with birthday
+#This caused errors with birthday thus I saved it as a csv in excel using the xlsx file which is used in the next chunk
 ```
+
+Next using csv for part 1:
 
 ```{r, eval = FALSE}
 # import may part 1 (saved as csv so birthday is fixed) 
@@ -41,20 +45,36 @@ Maypart1<- read_csv(here::here("data", "voter_data", "may_2020", "May_part1.csv"
                     col_types = cols(NonStandardAddress = col_character()))
 
 # check problems
-problems(Maypart1)
+if(nrow(problems(Maypar12)) == 0) print("ALL Good!") else(("Check data"))
 #all good!
 ```
 
+Need to not read first row as a header for part 2, instead we will use the header of part 1 as the header so that the first row's data is included.
+
+```{r, eval = FALSE}
+# import may part 2 (saved as csv so birthday is fixed) 
+# specify character for nonstandard address col
+Maypart2<- read_csv(here::here("data", "voter_data", "may_2020", "May_part2.csv"), col_names = colnames(Maypart1),
+                    col_types = cols(NonStandardAddress = col_character()))
+
+# check problems
+problems(Maypart2)
+
+if(nrow(problems(Maypart2)) == 0) print("ALL Good!") else(("Check data"))
+#all good!
+```
+
+
+
+If you wanted to use googlesheets4 could do this... but security risk to have URL out in public. We want this data to only be used the way we intend.
 
 ```{r, eval = FALSE}
 # removing URL for security reasons
-Maypart2_url <- "{URL goes here}"
+Maypart2_url <- "{URL of link goes here}"
 Maypart2 <-googlesheets4::read_sheet(Maypart2_url)
-# check problems
-problems(Maypart2)
-#all good!
 ```
 
+Put two may data peices together and save:
 
 ```{r, eval = FALSE}
 May <-bind_rows(Maypart1, Maypart2)
@@ -63,6 +83,7 @@ set.seed(1234)
 May_sample <-May %>% slice_sample(n = 50)
 save(May_sample, file = here::here("data", "voter_data","may_2020",  "may_2020_voter_data_random_subset.rda"))
 ```
+
 
 
 ## December data
@@ -101,7 +122,7 @@ load(file = here::here("data", "voter_data","dec_2020",  "dec_2020_voter_data_ra
 ***Looks like some people dont have the day for their birthday, just year and month and 00 for day - something to keep in mind.***
 
 
-To load all of the May 2020 data:
+To load all of the May & Dec 2020 data:
 
 ```{r}
 load(file = here::here("data", "voter_data","may_2020",  "may_2020_voter_data.rda"))
