@@ -1,0 +1,113 @@
+---
+title: "Voter Data Import"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: true
+---
+
+
+# General Thoughts
+
+To use googlesheets4:
+1) Data needs to be resaved as googlesheet not xlsx 
+2) Need at least commenting permission to access
+
+I am not sure what is the most sustainable option for gathering new data... maybe just having a computer powerful enough to download the data? is dta the raw format? Should ask about this.
+
+XLSX version had messed up birth dates - so that had to be fixed.
+
+
+```{r, eval = FALSE}
+library(googledrive)
+library(googlesheets4)
+library(tidyverse)
+```
+
+# Importing voter Data from 2020 
+
+## May data
+
+```{r,  eval = FALSE}
+#Data from May imported by Carrie on her machine - not including data on GitHub for security reasons
+Maypart1<- readxl::read_xlsx(here::here("data", "voter_data", "may_2020", "May_part1.xlsx"))
+#This caused errors with birthday
+```
+
+```{r, eval = FALSE}
+# import may part 1 (saved as csv so birthday is fixed) 
+# specify character for nonstandard address col
+Maypart1<- read_csv(here::here("data", "voter_data", "may_2020", "May_part1.csv"), 
+                    col_types = cols(NonStandardAddress = col_character()))
+
+# check problems
+problems(Maypart1)
+#all good!
+```
+
+
+```{r, eval = FALSE}
+# removing URL for security reasons
+Maypart2_url <- "{URL goes here}"
+Maypart2 <-googlesheets4::read_sheet(Maypart2_url)
+# check problems
+problems(Maypart2)
+#all good!
+```
+
+
+```{r, eval = FALSE}
+May <-bind_rows(Maypart1, Maypart2)
+save(May, file = here::here("data", "voter_data","may_2020",  "may_2020_voter_data.rda"))
+set.seed(1234)
+May_sample <-May %>% slice_sample(n = 50)
+save(May_sample, file = here::here("data", "voter_data","may_2020",  "may_2020_voter_data_random_subset.rda"))
+```
+
+
+## December data
+
+```{r, eval = FALSE}
+Dec_2020 <-read_csv(here::here("data", "voter_data", "dec_2020", "Dec_2020.csv"))
+problems(Dec_2020) %>%pull(expected) %>% unique()
+#Looks like some people dont have the day for their birthday, just year and month and 00 for day.
+#issue with true false expectation
+colnames(Dec_2020)[problems(Dec_2020) %>%filter(expected !="date in ISO8601" ) %>% pull(col) %>% unique()]
+# only appears to be issue with voting method or party -so should be OK
+
+save(Dec_2020, file = here::here("data", "voter_data","dec_2020",  "dec_2020_voter_data.rda"))
+
+set.seed(1234)
+Dec_sample <-Dec_2020 %>% slice_sample(n = 50)
+save(Dec_sample, file = here::here("data", "voter_data","dec_2020",  "dec_2020_voter_data_random_subset.rda"))
+```
+
+# Instructions to load data for wrangling
+Note this is set up for having the data in a data directory:
+
+- that has a subdirectory called voter_data
+- that has a subdirectory called may_2020 and dec_2020
+
+
+To get less data to practice with use this code:
+
+```{r}
+load(file = here::here("data", "voter_data","may_2020",  "may_2020_voter_data_random_subset.rda"))
+load(file = here::here("data", "voter_data","dec_2020",  "dec_2020_voter_data_random_subset.rda"))
+
+```
+
+
+***Looks like some people dont have the day for their birthday, just year and month and 00 for day - something to keep in mind.***
+
+
+To load all of the May 2020 data:
+
+```{r}
+load(file = here::here("data", "voter_data","may_2020",  "may_2020_voter_data.rda"))
+load(file = here::here("data", "voter_data","dec_2020",  "dec_2020_voter_data.rda"))
+```
+
+
+
+
