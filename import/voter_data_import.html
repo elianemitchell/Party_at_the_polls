@@ -248,6 +248,14 @@ div.tocify {
 </div>
 
 
+<style>
+#TOC {
+  background: url("https://images.squarespace-cdn.com/content/v1/5a397a42b1ffb615a2f64268/1580157288562-QZVW5Z3CYNZY4E1460JU/Hi+Res.png");
+  background-size: contain;
+  padding-top: 240px !important;
+  background-repeat: no-repeat;
+}
+</style>
 <div id="general-thoughts" class="section level1">
 <h1>General Thoughts</h1>
 <p>To use googlesheets4: 1) Data needs to be resaved as googlesheet not xlsx 2) Need at least commenting permission to access</p>
@@ -314,16 +322,25 @@ save(Dec_sample, file = here::here(&quot;data&quot;, &quot;voter_data&quot;,&quo
 </div>
 <div id="instructions-to-load-data-for-wrangling" class="section level1">
 <h1>Instructions to load data for wrangling</h1>
-<p>Note this is set up for having the data in a data directory:</p>
+<ol style="list-style-type: decimal">
+<li>Clone the repo at: <a href="https://github.com/carriewright11/Party_at_the_polls.git" class="uri">https://github.com/carriewright11/Party_at_the_polls.git</a></li>
+</ol>
+<p>Can use git clone <a href="https://github.com/carriewright11/Party_at_the_polls.git" class="uri">https://github.com/carriewright11/Party_at_the_polls.git</a> in the terminal to get the files/file structure.</p>
+<p>This will create a dir on your machine with a data directory:</p>
 <ul>
 <li>that has a subdirectory called voter_data</li>
 <li>that has a subdirectory called may_2020 and dec_2020</li>
 </ul>
-<p>To get less data to practice with use this code:</p>
+<p>The data files should be added to may_2020 and dec_2020 respectively - will describe this more in a second.</p>
+<ol start="2" style="list-style-type: decimal">
+<li><p>Get the data from our drive- link is in slack and restricted to just us. Only get the *_subset.rda files if you don’t want the files to be too large.</p></li>
+<li><p>Use code in following code chunks.</p></li>
+</ol>
+<p>To load less data (to practice with) use this code:</p>
 <pre class="r"><code>load(file = here::here(&quot;data&quot;, &quot;voter_data&quot;,&quot;may_2020&quot;,  &quot;may_2020_voter_data_random_subset.rda&quot;))
 load(file = here::here(&quot;data&quot;, &quot;voter_data&quot;,&quot;dec_2020&quot;,  &quot;dec_2020_voter_data_random_subset.rda&quot;))</code></pre>
 <p><strong><em>Looks like some people dont have the day for their birthday, just year and month and 00 for day - something to keep in mind.</em></strong></p>
-<p>To load all of the May &amp; Dec 2020 data:</p>
+<p>To load all of the May &amp; Dec 2020 data use this:</p>
 <pre class="r"><code>load(file = here::here(&quot;data&quot;, &quot;voter_data&quot;,&quot;may_2020&quot;,  &quot;may_2020_voter_data.rda&quot;))
 load(file = here::here(&quot;data&quot;, &quot;voter_data&quot;,&quot;dec_2020&quot;,  &quot;dec_2020_voter_data.rda&quot;))</code></pre>
 </div>
