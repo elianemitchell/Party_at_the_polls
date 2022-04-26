@@ -3,9 +3,17 @@ title: "Voter Data Import"
 output: 
   html_document:
     toc: TRUE
-    toc_float: true
+    toc_float: TRUE
 ---
 
+<style>
+#TOC {
+  background: url("https://images.squarespace-cdn.com/content/v1/5a397a42b1ffb615a2f64268/1580157288562-QZVW5Z3CYNZY4E1460JU/Hi+Res.png");
+  background-size: contain;
+  padding-top: 240px !important;
+  background-repeat: no-repeat;
+}
+</style>
 
 # General Thoughts
 
@@ -104,13 +112,23 @@ save(Dec_sample, file = here::here("data", "voter_data","dec_2020",  "dec_2020_v
 ```
 
 # Instructions to load data for wrangling
-Note this is set up for having the data in a data directory:
+
+1) Clone the repo at: https://github.com/carriewright11/Party_at_the_polls.git
+
+Can use git clone https://github.com/carriewright11/Party_at_the_polls.git in the terminal to get the files/file structure.
+
+This will create a dir on your machine with a data directory:
 
 - that has a subdirectory called voter_data
 - that has a subdirectory called may_2020 and dec_2020
 
+The data files should be added to may_2020 and dec_2020 respectively - will describe this more in a second.
 
-To get less data to practice with use this code:
+2) Get the data from our drive- link is in slack and restricted to just us. Only get the *_subset.rda files if you don't want the files to be too large.
+
+3) Use code in following code chunks.
+
+To load less data (to practice with) use this code:
 
 ```{r}
 load(file = here::here("data", "voter_data","may_2020",  "may_2020_voter_data_random_subset.rda"))
@@ -122,7 +140,7 @@ load(file = here::here("data", "voter_data","dec_2020",  "dec_2020_voter_data_ra
 ***Looks like some people dont have the day for their birthday, just year and month and 00 for day - something to keep in mind.***
 
 
-To load all of the May & Dec 2020 data:
+To load all of the May & Dec 2020 data use this:
 
 ```{r}
 load(file = here::here("data", "voter_data","may_2020",  "may_2020_voter_data.rda"))
