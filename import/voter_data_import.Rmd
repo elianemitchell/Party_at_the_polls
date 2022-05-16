@@ -53,7 +53,7 @@ Maypart1<- read_csv(here::here("data", "voter_data", "may_2020", "May_part1.csv"
                     col_types = cols(NonStandardAddress = col_character()))
 
 # check problems
-if(nrow(problems(Maypar12)) == 0) print("ALL Good!") else(("Check data"))
+if(nrow(problems(Maypart1)) == 0) print("ALL Good!") else(("Check data"))
 #all good!
 ```
 
@@ -111,6 +111,7 @@ Dec_sample <-Dec_2020 %>% slice_sample(n = 50)
 save(Dec_sample, file = here::here("data", "voter_data","dec_2020",  "dec_2020_voter_data_random_subset.rda"))
 ```
 
+
 # Instructions to load data for wrangling
 
 1) Clone the repo at: https://github.com/carriewright11/Party_at_the_polls.git
@@ -148,5 +149,8 @@ load(file = here::here("data", "voter_data","dec_2020",  "dec_2020_voter_data.rd
 ```
 
 
+```{r}
 
+devtools::session_info()
+```
 
