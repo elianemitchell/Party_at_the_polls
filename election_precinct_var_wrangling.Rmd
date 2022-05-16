@@ -1,0 +1,95 @@
+---
+title: "wrangle_turnout"
+output: html_document
+---
+
+Wrangling election and precinct variables in December data (use dec_wrangled.Rda file)
+
+```{r}
+
+load("/Users/eliane/Downloads/dec_wrangled (1).Rda")
+
+overall_turnout_dec <- overall_turnout
+overall_turnout_dec$election <- str_remove(overall_turnout_dec$election, "voted_in_") 
+overall_turnout_dec$election <- str_remove(overall_turnout_dec$election, "_voting_method")
+overall_turnout_dec$precinct_name <- str_remove(overall_turnout_dec$precinct_name, "BALTIMORE CITY - ")
+
+overall_turnout_dec <- separate(overall_turnout_dec, col = election, 
+         into=c('election_year','election_type1',
+                'election_type2'), sep = '_')
+
+overall_turnout_dec2 <- unite(overall_turnout_dec, 
+                              col = "election",
+                              election_type1, election_type2,
+                                sep = " ")
+
+#unique(overall_turnout_dec2$election)
+```
+
+Wrangling election variables in May 2020 data 
+
+```{r}
+may_2020 <- read_csv("/Users/eliane/Desktop/R Folder/Data Hackathon/overall_turnout_may.csv")
+
+may_2020$election <- tolower(may_2020$election)
+
+may_2020 <- separate(may_2020, col = election, 
+                     into=c('election_type1',
+                            'election_type2', 'election_year'), sep = '_')
+
+may_2020_2 <- unite(may_2020, col = "election",
+                              election_type1, election_type2,
+                                sep = " ")
+
+# unique(may_2020$election_type2)
+# unique(overall_turnout_dec$election_type2)
+```
+
+After cleaning up the election and precinct variables individually, 
+ensure that the precincts match up between datasets
+
+First chunk, ensure that there are no precincts that don't exist in the other dataset
+Second chunk, pull the "unique" precinct values for each dataset and ensure they're the same
+Third chunk, find precinct values that do not exist in the other
+
+```{r}
+MayPrecinct <- may_2020$Precinct
+DecPrecinct <- overall_turnout_dec$precinct_name
+MayPrecinct[!(MayPrecinct %in% DecPrecinct)]
+DecPrecinct[!(DecPrecinct %in% MayPrecinct)]
+
+head(MayPrecinct)
+head(DecPrecinct)
+May_pre <-sort(unique(MayPrecinct))
+Dec_pre <-sort(unique(DecPrecinct))
+identical(May_pre, Dec_pre)
+
+setdiff(MayPrecinct, DecPrecinct)
+# make May and Dec match
+         
+```
+
+Final steps - bind the cleaned up dec and may data 
+The election variables are now compatible between datasets
+
+```{r}
+
+names(overall_turnout_dec2)
+names(may_2020_2)
+
+overall_turnout_dec2 <- overall_turnout_dec2 %>% 
+  select(election_year, election, "precinct" = precinct_name,
+         "voted_no" = No_vote, "voted_yes" = Total_vote,
+         turnout_perc)
+
+may_2020_2 <- may_2020_2 %>% select(election_year, election,
+                                    "precinct" = Precinct, voted_no, voted_yes,
+                                    turnout_perc)
+
+bind_overall_turnout <- bind_rows(may_2020_2, overall_turnout_dec2, .id= "source")
+bind_overall_turnout <- bind_overall_turnout %>% 
+  mutate(source = case_when(source == 1  ~ "may",
+                            source == 2 ~ "dec"))
+
+#View(bind_overall_turnout %>% filter(election_year == 2016) %>% filter(precinct == 25003))
+```
